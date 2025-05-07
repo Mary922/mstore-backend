@@ -4,6 +4,7 @@ import {Addresses} from "../../models/addresses.js";
 import {Op, where} from "sequelize";
 import {Cities, Regions} from "../../models/associations.js";
 import {sequelize} from "../../models/sequelize.js";
+import {authWebsite} from "../../server/middleware/authWebsite.js";
 
 
 const router = express.Router();
@@ -55,19 +56,29 @@ router.post("/address/create", async (req, res) => {
     }
     const {clientId, name, surname, region, city, phone, address} = value;
 
-    const newAddress = await Addresses.create({
-        client_id: clientId,
-        region: region,
-        city: city,
-        address_name: address,
-        isActual: 1,
+    if (clientId,name,surname, region, city, phone, address) {
+        const newAddress = await Addresses.create({
+            client_id: clientId,
+            region_id: region,
+            city_id: city,
+            address_name: address,
+            isActual: 1,
+            deleted_at: 0
+        })
+    }
+
+    const addresses = await Addresses.findAll({
+        where: {
+            client_id: clientId,
+            deleted_at: 0
+        }
     })
 
 
     res.status(201).json({
         success: true,
         message: 'Адрес успешно создан',
-        data: value
+        data: addresses
     });
 
 })
@@ -152,7 +163,7 @@ router.post("/address/update", async (req, res) => {
 
 })
 
-router.post("/address/delete", async (req, res) => {
+router.post("/address/delete",authWebsite, async (req, res) => {
 
     const data = req.body;
     console.log('DATA ADDRESS DELETE', data);
@@ -162,14 +173,17 @@ router.post("/address/delete", async (req, res) => {
             address_id: data.addressId
         }
     })
-    await addressToDelete.update({
-        deleted_at: data.flag,
-    })
-    await addressToDelete.save();
+    if (data.flag === 1) {
+        await addressToDelete.update({
+            deleted_at: data.flag,
+        })
+        await addressToDelete.save();
+    }
 
     const addresses = await Addresses.findAll({
         where: {
             deleted_at: 0,
+            client_id: req.userId,
         }
     });
 

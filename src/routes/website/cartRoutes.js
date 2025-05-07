@@ -187,10 +187,15 @@ router.post("/cart/delete",authWebsite,async (req, res) => {
     const deleteProduct = await CartModel.destroy({
         where: {
             product_id: data.productId,
-            product_size: data.sizeId
+            product_size: data.sizeId,
+            client_id: req.userId,
         }
     })
-    const cart = await CartModel.findAll({})
+    const cart = await CartModel.findAll({
+        where: {
+            client_id: req.userId,
+        }
+    })
 
     return res.json({
         success: true,
@@ -203,18 +208,22 @@ router.post("/cart/delete",authWebsite,async (req, res) => {
 
 router.post("/cart/increase",authWebsite,async (req, res) => {
     const data = req.body.data;
-    console.log('DATA', data);
+    console.log('DATA INCREASE', data);
 
     let CartModel = CartItems;
+    let clientId = req.userId;
+    console.log('clientId INCREASE', clientId);
 
     if (req.isTemp){
         CartModel = TempCartItems;
     }
 
+
     const product = await CartModel.findOne({
         where: {
             product_id: data.productId,
-            product_size: data.sizeId
+            product_size: data.sizeId,
+            client_id: clientId,
         }
     })
     if (!product) {
@@ -225,8 +234,20 @@ router.post("/cart/increase",authWebsite,async (req, res) => {
 
     product.product_count = product.product_count + 1;
     await product.save();
+    const cart = await CartModel.findAll({
+        where: {
+            client_id: clientId,
+        }
+    })
 
-    const cart = await CartModel.findAll({})
+    // console.log('PRODUCT UPDATE TEMP CLIENT', data.clientId);
+
+    // let cart = await CartModel.findAll({
+    //         where: {
+    //             client_id: req.userId,
+    //         }
+    //     })
+
 
     return res.json({
         success: true,
@@ -250,7 +271,8 @@ router.post("/cart/decrease",authWebsite,async (req, res) => {
     const product = await CartModel.findOne({
         where: {
             product_id: data.productId,
-            product_size: data.sizeId
+            product_size: data.sizeId,
+            client_id: req.userId,
         }
     })
     if (!product) {
@@ -271,7 +293,11 @@ router.post("/cart/decrease",authWebsite,async (req, res) => {
         })
     }
 
-    const cart = await CartModel.findAll({})
+    const cart = await CartModel.findAll({
+        where: {
+            client_id: req.userId,
+        }
+    })
 
 
     return res.json({
