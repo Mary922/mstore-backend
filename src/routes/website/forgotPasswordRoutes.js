@@ -12,12 +12,15 @@ router.post("/forgotPassword", async (req, res) => {
     const data = req.body;
     console.log('DATA RESET PASSWORD', data);
     const {email} = req.body;
+    console.log('EMAIL RESET PASSWORD', email);
 
     if (!email) {
+        console.log('gde email')
         return res.status(400).json({message: 'Email обязателен для восстановления пароля'});
     }
-    const isValidEmail = validator.isEmail('email');
-    if (isValidEmail) {
+
+    const isValidEmail = validator.isEmail(email);
+    if (!isValidEmail) {
         return res.status(200).json({message: 'Неверный формат email'});
     }
     const existingClientEmail = await Clients.getByEmail(email);
@@ -30,6 +33,8 @@ router.post("/forgotPassword", async (req, res) => {
 
     const resetToken = nanoid(32);
     const resetTokenExpiry = Date.now() + 1200000; // 20 минут
+
+    console.log('Saving token...', resetTokenExpiry);
 
     const existingReset = await ResetPassword.findOne({
         where: {
@@ -85,7 +90,7 @@ router.post("/forgotPassword", async (req, res) => {
 router.post("/changeForgottenPassword", async (req, res) => {
     try {
         const data = req.body;
-        const {token,password} = req.body;
+        const {token, password} = req.body;
         console.log('DATA CHANGE FORGOTTEN PASSWORD', data);
 
 
@@ -95,7 +100,7 @@ router.post("/changeForgottenPassword", async (req, res) => {
             }
         })
         const clientEmail = checkClientByToken.client_email;
-        console.log('time',new Date().getTime());
+        console.log('time', new Date().getTime());
 
         if (checkClientByToken && checkClientByToken.reset_token_expiry > new Date().getTime()) {
             const hashedPassword = await bcrypt.hash(password, 12);
@@ -103,10 +108,11 @@ router.post("/changeForgottenPassword", async (req, res) => {
 
             const updatedClient = await Clients.update({
                 client_password: hashedPassword
-            },{
-                where:{
+            }, {
+                where: {
                     client_email: clientEmail,
-                }})
+                }
+            })
             if (updatedClient) {
                 await ResetPassword.destroy({
                     where: {
@@ -137,6 +143,7 @@ router.post("/changeForgottenPassword", async (req, res) => {
         }
 
     } catch (error) {
+        console.log('smth with token')
         console.log(error)
     }
 })
@@ -146,10 +153,10 @@ router.post("/checkTokenNotExpired", async (req, res) => {
     try {
         const data = req.body;
         const {token} = req.body;
-        // console.log('DATA CHANGE FORGOTTEN PASSWORD', data);
+        console.log('DATA CHANGE FORGOTTEN PASSWORD', data);
 
         if (!token) {
-            return res.status(400).json({ message: 'Токен не предоставлен' });
+            return res.status(400).json({message: 'Токен не предоставлен'});
         }
 
 
@@ -157,9 +164,19 @@ router.post("/checkTokenNotExpired", async (req, res) => {
             where: {
                 reset_token: token,
             }
-        })
+        });
 
-        if (!checkClientByToken || checkClientByToken.reset_token_expiry <= new Date().getTime()) {
+        if (!checkClientByToken) {
+            return res.json({
+                success: false,
+                message: 'token is expired or not exist'
+            });
+        }
+
+        const currentTimestamp = new Date().getTime();
+        const expiryTimestamp = parseInt(checkClientByToken.reset_token_expiry);
+
+        if (expiryTimestamp <= currentTimestamp) {
 
             return res.json({
                 success: false,

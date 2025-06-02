@@ -3,13 +3,17 @@ import jwt from 'jsonwebtoken';
 import {Clients} from "../../models/clients.js";
 import {v4} from 'uuid';
 import bcrypt from "bcrypt";
+import moment from "moment/moment.js";
+import {TempCartItems} from "../../models/tempCartItems.js";
+import {CartItems} from "../../models/cartItems.js";
+import {authWebsite} from "../../server/middleware/authWebsite.js";
 
-// import {data} from "express-session/session/cookie.js";
+
 
 const router = express.Router();
 
 
-router.post("/auth", async (req, res) => {
+router.post("/auth",authWebsite,async (req, res) => {
     try {
         const data = req.body;
         console.log('DATA', data);
@@ -42,12 +46,65 @@ router.post("/auth", async (req, res) => {
 
             console.log('password is ok');
 
+
+            const tempProducts = await TempCartItems.findAll(
+                {
+                    where:
+                        {
+                            client_id: req.userId
+                        }
+                });
+
+            console.log('tempProducts', tempProducts);
+
+            for (const tempItem of tempProducts) {
+                const existingProduct = await CartItems.findOne({
+                    where: {
+                        client_id: client.client_id,
+                        product_id: tempItem.product_id,
+                        product_size: tempItem.product_size,
+                    },
+                });
+
+                if (existingProduct) {
+                    console.log('uze est')
+                    // Если товар уже существует в главной корзине — увеличиваем количество
+                    await CartItems.update(
+                        {product_count: existingProduct.product_count + tempItem.product_count},
+                        {
+                            where:
+                                {
+                                    product_id: existingProduct.product_id
+                                }
+                        }
+                    );
+                } else {
+                    console.log('im here no',existingProduct);
+                    console.log('reqqq',req.userId);
+
+                    // Добавляем новый продукт в главную корзину
+                    await CartItems.create({
+                        client_id: client.client_id,
+                        product_id: tempItem.product_id,
+                        product_size: tempItem.product_size,
+                        product_count: tempItem.product_count,
+                        created_at: moment().unix()
+                    });
+                }
+            }
+
+            // Удаляем временную корзину после объединения
+            await TempCartItems.destroy({where: {client_id: req.userId}});
+
+
+
             return res.json({
                 success: true,
                 data: {
                     id: client.client_id,
                     email: client.client_email,
                     accessToken: token,
+
                 }
             })
 

@@ -7,7 +7,7 @@ import {TempCartItems} from "../../models/tempCartItems.js";
 
 const router = express.Router();
 
-router.post("/cart",authWebsite,async (req, res) => {
+router.post("/cart", authWebsite, async (req, res) => {
     const data = req.body;
     console.log('DATA', data);
 
@@ -36,7 +36,7 @@ router.post("/cart",authWebsite,async (req, res) => {
                     price: products[j].price,
                     count: cart[i].count,
                 }
-               list.push(obj);
+                list.push(obj);
             }
         }
     }
@@ -55,9 +55,9 @@ router.post("/cart",authWebsite,async (req, res) => {
 
     });
 
-} )
+})
 
-router.post("/preorder",authWebsite,async (req, res) => {
+router.post("/preorder", authWebsite, async (req, res) => {
     const data = req.body;
     console.log('DATA preOrder', data);
 
@@ -67,7 +67,6 @@ router.post("/preorder",authWebsite,async (req, res) => {
     console.log('preOrder', preOrder);
 
 
-
     res.json({
         success: true,
         data: {
@@ -75,11 +74,10 @@ router.post("/preorder",authWebsite,async (req, res) => {
             sum: sum,
         },
     });
-} )
+})
 
 
-
-router.post("/cart/add",authWebsite,async (req, res) => {
+router.post("/cart/add", authWebsite,async (req, res) => {
     try {
         const data = req.body;
         console.log('CART ADD', data);
@@ -87,14 +85,17 @@ router.post("/cart/add",authWebsite,async (req, res) => {
         let CartModel = CartItems;
         let tempClientId;
 
-        if (req.isTemp){
+        if (req.isTemp) {
             CartModel = TempCartItems;
             tempClientId = req.userId;
         }
-        console.log('tempClientId', tempClientId);
+        // console.log('tempClientId', tempClientId);
+        // console.log('constant clientId', req.userId);
+
 
         const existingProduct = await CartModel.findOne({
             where: {
+                client_id: req.userId,
                 product_id: data.cart.productId,
                 product_size: data.cart.productSize,
             }
@@ -121,6 +122,41 @@ router.post("/cart/add",authWebsite,async (req, res) => {
             })
         }
 
+        // const tempProducts = await TempCartItems.findAll({
+        //     where: {
+        //         client_id: req.isTemp,
+        //     }
+        // })
+        // console.log('tempProducts DADADADA', tempProducts)
+        // for (const item of tempProducts) {
+        //     const mainItem = await CartItems.findOne({
+        //         where: {
+        //             product_id: item.product_id,
+        //             product_size: item.product_size,
+        //         }
+        //     })
+        //     if (mainItem) {
+        //         await CartItems.update({
+        //             product_count: mainItem.product_count + item.product_count,
+        //         },{
+        //             where: {
+        //                 product_id: item.product_id,
+        //                 product_size: item.product_size,
+        //             }
+        //         })
+        //     } else {
+        //         await CartItems.create({
+        //             client_id: req.userId,
+        //             product_id: item.product_id,
+        //             product_size: item.product_size,
+        //             product_count: item.product_count,
+        //             created_at: moment().unix(),
+        //         })
+        //     }
+        // }
+        // await TempCartItems.destroy({ where: { client_id: req.isTemp } });
+        // const productsICart = await CartItems.findAll({ where: { client_id: req.userId } });
+
         const productsICart = await CartModel.findAll({
             where: {
                 client_id: req.userId,
@@ -136,20 +172,20 @@ router.post("/cart/add",authWebsite,async (req, res) => {
             },
         });
 
-    }catch(err) {
+    } catch (err) {
         console.log(err);
     }
 
 
-} )
+})
 
-router.post("/cart/get",authWebsite,async (req, res) => {
+router.post("/cart/get", authWebsite, async (req, res) => {
     const data = req.body;
     console.log('DATA CART GET', data);
 
     let CartModel = CartItems;
 
-    if (req.isTemp){
+    if (req.isTemp) {
         CartModel = TempCartItems;
     }
 
@@ -174,13 +210,13 @@ router.post("/cart/get",authWebsite,async (req, res) => {
 })
 
 
-router.post("/cart/delete",authWebsite,async (req, res) => {
+router.post("/cart/delete", authWebsite, async (req, res) => {
     const data = req.body;
     console.log('DATA', data);
 
     let CartModel = CartItems;
 
-    if (req.isTemp){
+    if (req.isTemp) {
         CartModel = TempCartItems;
     }
 
@@ -206,7 +242,7 @@ router.post("/cart/delete",authWebsite,async (req, res) => {
 })
 
 
-router.post("/cart/increase",authWebsite,async (req, res) => {
+router.post("/cart/increase", authWebsite, async (req, res) => {
     const data = req.body.data;
     console.log('DATA INCREASE', data);
 
@@ -214,7 +250,7 @@ router.post("/cart/increase",authWebsite,async (req, res) => {
     let clientId = req.userId;
     console.log('clientId INCREASE', clientId);
 
-    if (req.isTemp){
+    if (req.isTemp) {
         CartModel = TempCartItems;
     }
 
@@ -258,13 +294,13 @@ router.post("/cart/increase",authWebsite,async (req, res) => {
 })
 
 
-router.post("/cart/decrease",authWebsite,async (req, res) => {
+router.post("/cart/decrease", authWebsite, async (req, res) => {
     const data = req.body.data;
     console.log('DATA', data);
 
     let CartModel = CartItems;
 
-    if (req.isTemp){
+    if (req.isTemp) {
         CartModel = TempCartItems;
     }
 
@@ -309,20 +345,20 @@ router.post("/cart/decrease",authWebsite,async (req, res) => {
 })
 
 
-router.post("/cart/clear",authWebsite,async (req, res) => {
+router.post("/cart/clear", authWebsite, async (req, res) => {
     const data = req.body;
     console.log('DATA CLEAR', data);
 
     let CartModel = CartItems;
 
-    if (req.isTemp){
+    if (req.isTemp) {
         CartModel = TempCartItems;
     }
-        const emptyCart = await CartModel.destroy({
-            where: {
-                client_id: req.userId,
-            }
-        })
+    const emptyCart = await CartModel.destroy({
+        where: {
+            client_id: req.userId,
+        }
+    })
 
 
     const cart = await CartModel.findAll({})

@@ -56,7 +56,18 @@ router.post("/address/create", async (req, res) => {
     }
     const {clientId, name, surname, region, city, phone, address} = value;
 
-    if (clientId,name,surname, region, city, phone, address) {
+    await Addresses.update({
+            isActual: 0,
+        },
+        {
+            where: {
+                client_id: clientId,
+                deleted_at: 0,
+            }
+        }
+    )
+
+    if (clientId, name, surname, region, city, phone, address) {
         const newAddress = await Addresses.create({
             client_id: clientId,
             region_id: region,
@@ -66,6 +77,7 @@ router.post("/address/create", async (req, res) => {
             deleted_at: 0
         })
     }
+
 
     const addresses = await Addresses.findAll({
         where: {
@@ -99,12 +111,12 @@ router.get("/addresses/get", async (req, res) => {
             {
                 model: Cities,
                 attributes: ['city_name'],
-                    include: [
-                        {
-                            model: Regions,
-                            attributes: ['region_name'],
-                        }
-                    ]
+                include: [
+                    {
+                        model: Regions,
+                        attributes: ['region_name'],
+                    }
+                ]
             }
         ]
     })
@@ -163,7 +175,7 @@ router.post("/address/update", async (req, res) => {
 
 })
 
-router.post("/address/delete",authWebsite, async (req, res) => {
+router.post("/address/delete", authWebsite, async (req, res) => {
 
     const data = req.body;
     console.log('DATA ADDRESS DELETE', data);

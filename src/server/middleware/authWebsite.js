@@ -29,8 +29,8 @@ export const authWebsite = (req, res, next) => {
             }
 
             if (decoded.isTemp) {
-                req.isTemp = decoded.isTemp;
-                req.userId = decoded.id;
+                req.isTemp = decoded.isTemp; // временный
+                req.userId = decoded.id; // постоянный
                 console.log('AUTH WEB USER ID TEMP',req.userId);
             }
             req.userId = decoded.id;

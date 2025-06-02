@@ -3,7 +3,7 @@ import cors from 'cors';
 import fileUpload from 'express-fileupload';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import dotenv from 'dotenv';
+import 'dotenv/config'
 
 
 // importing routes
@@ -56,7 +56,7 @@ app.get('/', (req, res) => {
 })
 app.use(cors());
 
-dotenv.config();
+
 
 // app.use(cors({
 //     origin: 'http://localhost:3000',

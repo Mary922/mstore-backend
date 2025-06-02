@@ -3,12 +3,13 @@ import {
     Brands,
     Categories,
     Colors,
-    Countries, Gender, Images,
+    Countries, Gender, Images, ProductImages,
     Products,
     Seasons,
     Sizes
 } from "../../models/associations.js";
 import {Op} from "sequelize";
+import {sequelize} from "../../models/sequelize.js";
 
 
 const router = express.Router();
@@ -139,12 +140,24 @@ router.get("/filter/products", async (req, res) => {
                 required: true,
             })
         }
-        if (gender) {
-            include.push({
+
+        // include.push({
+        //         model: Images,
+        //         // attributes: ['image_id', 'image_path'],
+        //         through: {
+        //             attributes: ['order_index'], // Добавляем поле order_index из ProductImages
+        //         },
+        //     order: [[sequelize.col('ProductImages.order_index'), 'ASC']]
+        //     },
+        // )
+
+
+        include.push({
                 model: Images,
                 attributes: ['image_id', 'image_path'],
-            })
-        }
+            },
+        )
+
 
         // if (gender) {
         //     include.push({
@@ -184,10 +197,20 @@ router.get("/filter/products", async (req, res) => {
         // console.log('filters',filters);
         // console.log('include',include);
         let products = await Products.findAll({
-                where: filters,
-                include: include
-            })
-        console.log('products RESULT', products)
+            where: filters,
+            include: include
+        })
+      //  console.log('products RESULT', products);
+
+        // if (products && products.length > 0) {
+        //     for (let product of products) {
+        //         product.images.sort((imgA, imgB) => {
+        //             return imgA.dataValues.ProductImages.order_index - imgB.dataValues.ProductImages.order_index;
+        //         });
+        //     }
+        //     return products
+        // }
+
 
         // let products;
         // if (category) {

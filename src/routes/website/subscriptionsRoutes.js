@@ -26,7 +26,7 @@ router.post("/subscription",authWebsite, async (req, res) => {
         if (emailIsExisting) {
             return res.json({
                 success: true,
-                message: 'Вы уже подписаны'
+                message: 'Вы уже подписаны на наши обновления'
             });
         }
 
