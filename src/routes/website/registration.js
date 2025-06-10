@@ -64,7 +64,7 @@ router.post('/register', async (req, res) => {
         port: 465,
         auth: {
             user: process.env.EMAIL,
-            pass: process.env.PASSWORD,
+            pass: process.env.PASSWORDMAILER,
         }
     })
     try {
@@ -89,7 +89,7 @@ router.post('/register', async (req, res) => {
 router.post("/auth-password/check", async (req, res) => {
     const data = req.body;
     console.log('DATA', data);
-    const MAX_TTL_SECONDS = 120;
+    const MAX_TTL_SECONDS = 300;
 
     const {email, password, name, surname, phone, birthday, generatedPassword} = req.body;
 
@@ -110,11 +110,11 @@ router.post("/auth-password/check", async (req, res) => {
             }
         })
         if (!tempClientPass) {
-            return res.status(401).json({message: 'Invalid credentials'});
+            return res.status(200).json({message: 'Invalid credentials'});
         }
 
         const passwordTTL = tempClientPass.created_at;
-        const timeDiff = currentTime - passwordTTL; // milliseconds
+        const timeDiff = currentTime - passwordTTL;
         console.log('TIME DIFF TIME DIFF', timeDiff);
 
         if (timeDiff > MAX_TTL_SECONDS) {

@@ -61,7 +61,7 @@ router.post("/forgotPassword", async (req, res) => {
         port: 465,
         auth: {
             user: process.env.EMAIL,
-            pass: process.env.PASSWORD,
+            pass: process.env.PASSWORDMAILER,
         }
     })
     try {

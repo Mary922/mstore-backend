@@ -12,7 +12,7 @@ router.post("/subscription",authWebsite, async (req, res) => {
 
 
         if (!clientEmail || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(clientEmail)) {
-            return res.status(400).json({
+            return res.status(200).json({
                 success: false,
                 message: 'Пожалуйста, укажите корректный email'
             });
@@ -29,8 +29,6 @@ router.post("/subscription",authWebsite, async (req, res) => {
                 message: 'Вы уже подписаны на наши обновления'
             });
         }
-
-        // console.log('clientEmail', clientEmail);
 
         const result = await Subscriptions.create({
                 subscription_email: clientEmail,
