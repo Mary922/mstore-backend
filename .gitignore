@@ -1,3 +1,5 @@
 .idea
 .env
 src/.env
+
+src/images
