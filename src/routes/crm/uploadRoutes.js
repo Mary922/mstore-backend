@@ -4,11 +4,10 @@ import {ImagesStatic} from "../../models/imagesStatic.js";
 
 const router = express.Router();
 
-router.post("/upload_files", async (req, res) => {
+router.post("/upload_files",async (req, res) => {
     if (!req.files || Object.keys(req.files).length === 0) {
         return res.status(400).send('No files were uploaded.');
     }
- //   console.log('files', req.files);
     let files = req.files.files;
 
 
@@ -43,16 +42,13 @@ router.post("/upload_files", async (req, res) => {
 })
 
 
-router.post("/upload_files/static", async (req, res) => {
+router.post("/upload_files/static",async (req, res) => {
     if (!req.files || Object.keys(req.files).length === 0) {
         return res.status(400).send('No files were uploaded.');
     }
     let files = req.files.files;
     const type = req.body.type;
     const field = req.body.field;
-    console.log('RESPONSE FILES STATIC', req.files.files);
-    console.log('RESPONSE FILES TYPE', req.body.type);
-    console.log('RESPONSE FILES FIELD', req.body.field);
 
     let extension = '';
     let image;

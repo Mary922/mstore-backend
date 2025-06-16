@@ -65,15 +65,12 @@ router.post("/wishlist/update", authWebsite, async (req, res) => {
                 created_at: moment().unix(),
             }
         )
-        console.log('RES', result);
 
         const allWishlist = await Wishlist.findAll({
             where: {
                 client_id: req.userId,
             }
         })
-        console.log('allwish',allWishlist)
-
 
         if (result === null) {
             res.json({
@@ -89,10 +86,6 @@ router.post("/wishlist/update", authWebsite, async (req, res) => {
             message: 'Already exist in wishlist'
         })
     }
-
-
-
-
 })
 
 
@@ -100,13 +93,9 @@ router.post("/wishlist/delete", authWebsite, async (req, res) => {
 
     const data = req.body;
     console.log('DATA', data);
-    // console.log('wishlist', data.wishlist);
-    // console.log('USER ID', req.userId);
-
 
     const productToDelete = await Wishlist.destroy({
         where: {
-            // client_id: req.userId,
             product_id: data.wishlist
         }
     })
@@ -116,14 +105,6 @@ router.post("/wishlist/delete", authWebsite, async (req, res) => {
             client_id: req.userId,
         }
     })
-
-
-    // if (result === null) {
-    //     res.json({
-    //         success: false,
-    //     })
-    // }
-
 
     res.json({
         success: true,

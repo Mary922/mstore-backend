@@ -23,7 +23,6 @@ router.post("/order/create",authWebsite, async (req, res) => {
         }
 
         const products = await Products.getByIds(productsIds);
-        console.log('products',products);
 
         cart.forEach((cartItem) => {
             const product = products.find(product => product.product_id === cartItem.product_id);
@@ -31,12 +30,9 @@ router.post("/order/create",authWebsite, async (req, res) => {
                 sum += product.price * cartItem.product_count;
             }
         })
-        console.log('SUM',sum);
-
 
         let orderResult,productOrderResult;
         if (frontsum == sum) {
-            console.log('sum is equal')
              orderResult = await Orders.create({
                 client_id: data.order.client,
                 region_id: data.order.region,

@@ -1,9 +1,6 @@
 import {Sequelize} from 'sequelize';
 
-
-
-
-console.log(process.env);
+// console.log(process.env);
 
 export const sequelize = new Sequelize(process.env.DATABASE, process.env.LOGIN, process.env.PASSWORD, {
     host: '127.0.0.1',

@@ -1,6 +1,7 @@
 import express from 'express';
 import jwt from 'jsonwebtoken';
 import {Users} from "../../models/users.js";
+import {checkAuth} from "../../server/middleware/authCrm.js";
 const router = express.Router();
 
 router.post("/crm/signin", async (req, res) => {
@@ -15,13 +16,10 @@ router.post("/crm/signin", async (req, res) => {
 
         if (!user) {
             return res.send({message: 'No user found.'})
-            // return res.status(401).send({message: 'No user found.'});
         }
         if (user.user_password == password) {
-            console.log('password is ok')
         } else {
             return res.send({message: 'Password is invalid.'})
-            // return res.status(401).send({message: 'Password is invalid.'});
         }
         let token = jwt.sign({id: user.user_id, color: 'red'}, 'secret', {algorithm: 'HS256', expiresIn: '24h'});
 
@@ -38,4 +36,19 @@ router.post("/crm/signin", async (req, res) => {
         console.log(error)
     }
 })
+
+router.post("/auth/check", checkAuth,async (req, res) => {
+    try {
+        const data = req.body;
+        console.log('DATA', data);
+
+        res.json({
+            message: success
+        })
+
+    } catch (error) {
+        console.log(error)
+    }
+})
+
 export default router;

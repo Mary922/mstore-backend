@@ -61,7 +61,6 @@ router.get("/products", checkAuth, async (req, res) => {
             }
         ],
     })
-    console.log('RES', result)
 
     if (result === null) {
         res.json({
@@ -74,67 +73,9 @@ router.get("/products", checkAuth, async (req, res) => {
     });
 })
 
-//
-// router.get("/products", checkAuth, async (req, res) => {
-//     const data = req.query;
-//     console.log('DATA', data);
-//
-//     const result = await Products.findAll({
-//         where: {
-//             deleted_at: null
-//         },
-//         include: [
-//             {
-//                 model: Tags,
-//                 attributes: ['tag_id', 'tag_name']
-//             },
-//             {
-//                 model: Categories,
-//                 attributes: ['category_id', 'category_name']
-//             },
-//             {
-//                 model: Colors,
-//                 attributes: ['color_id', 'color_name']
-//             },
-//             {
-//                 model: Units,
-//                 attributes: ['unit_id', 'unit_name']
-//             },
-//             {
-//                 model: Seasons,
-//                 attributes: ['season_id', 'season_name']
-//             },
-//             {
-//                 model: Sizes,
-//                 attributes: ['size_id', 'size_by_height']
-//             },
-//             {
-//                 model: Countries,
-//                 attributes: ['country_id', 'country_name']
-//             },
-//             {
-//                 model: Brands,
-//                 attributes: ['brand_id', 'brand_name']
-//             }
-//         ],
-//     })
-//     console.log('RES', result)
-//
-//     if (result === null) {
-//         res.json({
-//             success: false,
-//         })
-//     }
-//     res.json({
-//         success: true,
-//         data: result
-//     });
-// })
-
-
 router.get("/product", checkAuth, async (req, res) => {
     const data = req.query;
-    // console.log('DATA', data);
+    console.log('DATA', data);
 
 
     const result = await Products.findOne({
@@ -176,7 +117,6 @@ router.get("/product", checkAuth, async (req, res) => {
             }
         ]
     })
-    //  console.log('RES', result)
 
     let date = new Date();
     let now = Math.round(new Date().getTime() / 1000);
@@ -205,39 +145,6 @@ router.get("/product", checkAuth, async (req, res) => {
         result.price = productPrice.price;
         await result.save();
     }
-
-    // if (productPrice.length > 0) {
-    //     result.price = productPrice[0].price;
-    //     await result.save();
-    // }
-    // let actualTime, actualPrice;
-    //
-    // let sortedArray = productPrice.sort(function (firstTime, secondTime) {
-    //     return firstTime.time_beginning - secondTime.time_beginning;
-    // })
-    // // console.log('sortedArray',sortedArray);
-    //
-    // sortedArray.forEach(function (item, index) {
-    //     if (index >= 0) {
-    //         // console.log('item', item);
-    //         // console.log('now',now);
-    //         // console.log('current',sortedArray[index].time_beginning);
-    //
-    //         if (sortedArray[index].time_beginning > now) {
-    //             actualTime = sortedArray[index - 1].time_beginning;
-    //             actualPrice = sortedArray[index - 1].price;
-    //         }
-    //         if (sortedArray[index].time_beginning <= now) {
-    //             actualTime = sortedArray[index].time_beginning;
-    //             actualPrice = sortedArray[index].price;
-    //         }
-    //     }
-    // })
-    //
-    // result.price = actualPrice;
-    // await result.save();
-    //  console.log('actualTime', actualTime);
-    // console.log('actualPrice', actualPrice);
 
     if (result === null) {
         return res.json({
@@ -350,7 +257,6 @@ router.post("/product/update", checkAuth, async (req, res) => {
             }
         }
 
-
         if (product === null) {
             res.json({
                 success: false,
@@ -425,7 +331,6 @@ router.post("/product/new/create", checkAuth, async (req, res) => {
             let ids = data.imageIds;
             if (product.product_id && ids.length > 0) {
                 for (let i = 0; i < ids.length; i++) {
-                    console.log('ids[i]', ids[i]);
                     const image = await ProductImages.create({
                         product_id: product.product_id,
                         image_id: ids[i],

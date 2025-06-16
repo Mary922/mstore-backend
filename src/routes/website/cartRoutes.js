@@ -12,17 +12,13 @@ router.post("/cart", authWebsite, async (req, res) => {
     console.log('DATA', data);
 
     const cart = data.cart;
-    console.log('cart', cart);
 
     const idsFromCart = [];
     for (let i = 0; i < cart.length; i++) {
         idsFromCart.push(cart[i].id);
     }
-    console.log('ids', idsFromCart)
-
 
     const products = await Products.getByIds(idsFromCart);
-    console.log('productsListByIds', products);
 
     const list = [];
     for (let i = 0; i < cart.length; i++) {
@@ -64,8 +60,6 @@ router.post("/preorder", authWebsite, async (req, res) => {
     const sum = data.sum;
 
     const preOrder = data.cart;
-    console.log('preOrder', preOrder);
-
 
     res.json({
         success: true,
@@ -89,9 +83,6 @@ router.post("/cart/add", authWebsite,async (req, res) => {
             CartModel = TempCartItems;
             tempClientId = req.userId;
         }
-        // console.log('tempClientId', tempClientId);
-        // console.log('constant clientId', req.userId);
-
 
         const existingProduct = await CartModel.findOne({
             where: {
@@ -101,7 +92,6 @@ router.post("/cart/add", authWebsite,async (req, res) => {
             }
         })
         if (!existingProduct) {
-            console.log('no such prod')
             await CartModel.create({
                 client_id: req.userId,
                 product_id: data.cart.productId,
@@ -110,8 +100,6 @@ router.post("/cart/add", authWebsite,async (req, res) => {
                 created_at: moment().unix(),
             })
         } else {
-            console.log('prod exists');
-
             await CartModel.update({
                 product_count: existingProduct.product_count + 1
             }, {
@@ -121,41 +109,6 @@ router.post("/cart/add", authWebsite,async (req, res) => {
                 }
             })
         }
-
-        // const tempProducts = await TempCartItems.findAll({
-        //     where: {
-        //         client_id: req.isTemp,
-        //     }
-        // })
-        // console.log('tempProducts DADADADA', tempProducts)
-        // for (const item of tempProducts) {
-        //     const mainItem = await CartItems.findOne({
-        //         where: {
-        //             product_id: item.product_id,
-        //             product_size: item.product_size,
-        //         }
-        //     })
-        //     if (mainItem) {
-        //         await CartItems.update({
-        //             product_count: mainItem.product_count + item.product_count,
-        //         },{
-        //             where: {
-        //                 product_id: item.product_id,
-        //                 product_size: item.product_size,
-        //             }
-        //         })
-        //     } else {
-        //         await CartItems.create({
-        //             client_id: req.userId,
-        //             product_id: item.product_id,
-        //             product_size: item.product_size,
-        //             product_count: item.product_count,
-        //             created_at: moment().unix(),
-        //         })
-        //     }
-        // }
-        // await TempCartItems.destroy({ where: { client_id: req.isTemp } });
-        // const productsICart = await CartItems.findAll({ where: { client_id: req.userId } });
 
         const productsICart = await CartModel.findAll({
             where: {
@@ -248,7 +201,6 @@ router.post("/cart/increase", authWebsite, async (req, res) => {
 
     let CartModel = CartItems;
     let clientId = req.userId;
-    console.log('clientId INCREASE', clientId);
 
     if (req.isTemp) {
         CartModel = TempCartItems;
@@ -275,15 +227,6 @@ router.post("/cart/increase", authWebsite, async (req, res) => {
             client_id: clientId,
         }
     })
-
-    // console.log('PRODUCT UPDATE TEMP CLIENT', data.clientId);
-
-    // let cart = await CartModel.findAll({
-    //         where: {
-    //             client_id: req.userId,
-    //         }
-    //     })
-
 
     return res.json({
         success: true,

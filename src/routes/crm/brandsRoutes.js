@@ -9,7 +9,6 @@ router.get("/brands/get",checkAuth, async (req, res) => {
     console.log('DATA',data);
 
     const  result = await Brands.findAll({})
-    console.log('RES',result)
 
     if(result === null){
         res.json({
@@ -30,7 +29,6 @@ router.post("/brands/create", checkAuth,async (req, res) => {
     const result = await Brands.create({
         brand_name: data.brandName,
     })
-    console.log('RES', result)
 
     if (result === null) {
         res.json({
@@ -53,7 +51,6 @@ router.post("/brands/update", checkAuth,async (req, res) => {
             brand_id: data.brandId
         }
     })
-    console.log('RES', result)
 
     if (result === null) {
         res.json({

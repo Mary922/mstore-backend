@@ -9,7 +9,6 @@ router.get("/countries/get",checkAuth, async (req, res) => {
     console.log('DATA',data);
 
     const  result = await Countries.findAll({})
-    console.log('RES',result)
 
     if(result === null){
         res.json({

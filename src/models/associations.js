@@ -27,8 +27,6 @@ Products.belongsTo(Units, {foreignKey: 'unit_id'});
 Seasons.hasMany(Products, {foreignKey: 'season_id'});
 Products.belongsTo(Seasons, {foreignKey: 'season_id'});
 
-
-
 Brands.hasMany(Products, {foreignKey: 'brand_id'});
 Products.belongsTo(Brands, {foreignKey: 'brand_id'});
 
@@ -56,15 +54,9 @@ Orders.belongsTo(Cities, {foreignKey: 'city_id'});
 Regions.hasMany(Cities, {foreignKey: 'region_id'});
 Cities.belongsTo(Regions, {foreignKey: 'region_id'});
 
-// ProductImages.hasMany(Images,{foreignKey: 'image_id'});
-// Images.belongsTo(ProductImages,{foreignKey: 'image_id'});
-
 Products.belongsToMany(Images, {through: ProductImages, foreignKey: 'product_id'});
 Images.belongsToMany(Products, {through: ProductImages, foreignKey: 'image_id'});
 
-
-// Regions.hasMany(Addresses, {foreignKey: 'region_id'});
-// Addresses.belongsTo(Regions, {foreignKey: 'region_id'});
 
 Cities.hasMany(Addresses, {foreignKey: 'city_id'});
 Addresses.belongsTo(Cities, {foreignKey: 'city_id'});

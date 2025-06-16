@@ -9,7 +9,6 @@ router.get("/gender/get", checkAuth,async (req, res) => {
     console.log('DATA',data);
 
     const  result = await Gender.findAll({})
-    console.log('RES',result)
 
     if(result === null){
         res.json({

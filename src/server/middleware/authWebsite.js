@@ -14,11 +14,6 @@ export const authWebsite = (req, res, next) => {
         })
     }
 
-    // if (!token) {
-    //     const tempClient = Clients.create({
-    //         temp_client: 1
-    //     })
-
     try {
         jwt.verify(token, 'secret', (err, decoded) => {
             if (err) {

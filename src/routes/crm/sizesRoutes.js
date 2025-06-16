@@ -13,7 +13,6 @@ router.get("/sizes/get", checkAuth, async (req, res) => {
             deleted_at: null
         }
     })
-    console.log('RES',result)
 
     if(result === null){
         res.json({

@@ -1,7 +1,5 @@
-
 import express from "express";
-import {Images, ProductCategories, ProductImages, Products} from "../../models/associations.js";
-import {checkAuth} from "../../server/middleware/authCrm.js";
+import {Images, ProductCategories, Products} from "../../models/associations.js";
 
 const router = express.Router();
 

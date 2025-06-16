@@ -25,8 +25,6 @@ router.get('/crm/productCategories', checkAuth, async (req, res) => {
         }
     });
 
-    console.log(products);
-
     if (productCategories === null) {
        return res.json({
             success: false,

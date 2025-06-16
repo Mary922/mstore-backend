@@ -21,7 +21,7 @@ export const checkAuth = async (req, res, next) => {
                 message: 'Unauthorized',
             })
         }
-        req.user = decoded.id; // saving object for using in Routes
+        req.user = decoded.id;
         next();
     })
 }

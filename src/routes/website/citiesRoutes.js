@@ -1,5 +1,4 @@
 import express from "express";
-import {Regions} from "../../models/regions.js";
 import {Cities} from "../../models/cities.js";
 
 const router = express.Router();

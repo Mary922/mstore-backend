@@ -12,10 +12,8 @@ router.post("/forgotPassword", async (req, res) => {
     const data = req.body;
     console.log('DATA RESET PASSWORD', data);
     const {email} = req.body;
-    console.log('EMAIL RESET PASSWORD', email);
 
     if (!email) {
-        console.log('gde email')
         return res.status(400).json({message: 'Email обязателен для восстановления пароля'});
     }
 
@@ -33,8 +31,6 @@ router.post("/forgotPassword", async (req, res) => {
 
     const resetToken = nanoid(32);
     const resetTokenExpiry = Date.now() + 1200000; // 20 минут
-
-    console.log('Saving token...', resetTokenExpiry);
 
     const existingReset = await ResetPassword.findOne({
         where: {
@@ -82,7 +78,6 @@ router.post("/forgotPassword", async (req, res) => {
             message: 'Ссылка для восстановления успешно отправлена.'
         });
     } catch (error) {
-        console.log('Ошибка при отправке письма:', error);
         res.status(500).json({message: 'Произошла ошибка при отправке письма. Попробуйте позже.'});
     }
 })
@@ -91,8 +86,6 @@ router.post("/changeForgottenPassword", async (req, res) => {
     try {
         const data = req.body;
         const {token, password} = req.body;
-        console.log('DATA CHANGE FORGOTTEN PASSWORD', data);
-
 
         const checkClientByToken = await ResetPassword.findOne({
             where: {
@@ -100,11 +93,9 @@ router.post("/changeForgottenPassword", async (req, res) => {
             }
         })
         const clientEmail = checkClientByToken.client_email;
-        console.log('time', new Date().getTime());
 
         if (checkClientByToken && checkClientByToken.reset_token_expiry > new Date().getTime()) {
             const hashedPassword = await bcrypt.hash(password, 12);
-            console.log('time is ok');
 
             const updatedClient = await Clients.update({
                 client_password: hashedPassword
@@ -126,14 +117,6 @@ router.post("/changeForgottenPassword", async (req, res) => {
                 })
 
             }
-            // const changeClientPassword = await Clients.findOne({
-            //     where: {
-            //         client_email: clientEmail,
-            //     }
-            // })
-            // await changeClientPassword.update({
-            //     client_password: hashedPassword
-            // })
 
         } else {
             return res.json({
@@ -143,7 +126,6 @@ router.post("/changeForgottenPassword", async (req, res) => {
         }
 
     } catch (error) {
-        console.log('smth with token')
         console.log(error)
     }
 })

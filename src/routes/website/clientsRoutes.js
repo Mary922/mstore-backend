@@ -1,10 +1,11 @@
 import express from "express";
 import {Clients} from "../../models/clients.js";
 import moment from "moment";
+import {checkAuth} from "../../server/middleware/authCrm.js";
 
 const router = express.Router();
 
-router.get("/clients", async (req, res) => {
+router.get("/clients", checkAuth,async (req, res) => {
 
     const data = req.query;
     console.log('DATA', data);

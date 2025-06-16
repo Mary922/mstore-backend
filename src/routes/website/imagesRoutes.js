@@ -1,6 +1,5 @@
 import express from "express";
 import {Images} from "../../models/images.js";
-import {ProductImages} from "../../models/productImages.js";
 import {Products} from "../../models/associations.js";
 import {ImagesStatic} from "../../models/imagesStatic.js";
 
@@ -23,23 +22,7 @@ router.post("/images/get", async (req, res) => {
             }
         ]
     })
-    console.log('RES', result)
 
-    // let path = '';
-    // if (result) {
-    //     const image = await Images.findAll({
-    //         where: {
-    //             image_id: result.image_id
-    //         }
-    //     })
-    //     if (image) {
-    //         path = image.image_path
-    //     } else {
-    //         console.log('No image')
-    //     }
-    // }
-    //
-    //
     if (result === null) {
         return res.json({
             success: false,
@@ -62,23 +45,6 @@ router.post("/images/get/static", async (req, res) => {
             image_destination: data.destination,
         }
     })
-    console.log('RES', result)
-
-    // let path = '';
-    // if (result) {
-    //     const image = await Images.findAll({
-    //         where: {
-    //             image_id: result.image_id
-    //         }
-    //     })
-    //     if (image) {
-    //         path = image.image_path
-    //     } else {
-    //         console.log('No image')
-    //     }
-    // }
-    //
-    //
 
     if (result === null) {
         return res.json({

@@ -37,13 +37,12 @@ import wishlistRoutes from "./routes/website/wishlistRoutes.js";
 import uploadRoutes from "./routes/crm/uploadRoutes.js";
 import imagesRoutes from "./routes/website/imagesRoutes.js";
 import filterRoutes from "./routes/website/filterRoutes.js";
-import pricesRoutes from "./routes/crm/pricesRoutes.js";
 import pricesWebRoutes from "./routes/website/pricesWebRoutes.js";
 import addressesRoutes from "./routes/website/addressesRoutes.js";
 import subscriptionsRoutes from "./routes/website/subscriptionsRoutes.js";
 import forgotPasswordRoutes from "./routes/website/forgotPasswordRoutes.js";
 import divisionsRoutes from "./routes/website/divisionsRoutes.js";
-// import imagesRoutes from "./routes/crm/imagesRoutes.js";
+import crmOrdersRoutes from "./routes/crm/crmOrdersRoutes.js";
 
 const app = express();
 const port = 3001;
@@ -55,8 +54,6 @@ app.get('/', (req, res) => {
     res.json({message: 'ok'});
 })
 app.use(cors());
-
-
 
 // app.use(cors({
 //     origin: 'http://localhost:3000',
@@ -92,6 +89,7 @@ app.use(ProductCategoriesRoutes)
 app.use(AuthRoutes)
 app.use(crmAuth)
 app.use(uploadRoutes)
+app.use(crmOrdersRoutes)
 
 
 // Routes website

@@ -9,7 +9,6 @@ router.get("/units/get", checkAuth, async (req, res) => {
     console.log('DATA',data);
 
     const  result = await Units.findAll({})
-    console.log('RES',result)
 
     if(result === null){
         res.json({
@@ -30,7 +29,6 @@ router.post("/units/create", checkAuth,async (req, res) => {
     const result = await Units.create({
         unit_name: data.unitName,
     })
-    console.log('RES', result)
 
     if (result === null) {
         res.json({
@@ -53,7 +51,6 @@ router.post("/units/update", checkAuth, async (req, res) => {
             unit_id: data.unitId
         }
     })
-    console.log('RES', result)
 
     if (result === null) {
         res.json({

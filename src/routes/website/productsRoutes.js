@@ -12,9 +12,7 @@ import {Images} from "../../models/images.js";
 import {Op} from "sequelize";
 import {ProductImages} from "../../models/associations.js";
 
-
 const router = express.Router();
-
 
 router.get("/products/get", async (req, res) => {
 
@@ -271,7 +269,7 @@ router.get("/boys", async (req, res) => {
                 model: Images,
                 attributes: ['image_id', 'image_path'],
                 through: {
-                    attributes: ['order_index'], // Добавляем поле order_index из ProductImages
+                    attributes: ['order_index'],
                 },
                 order: [[ProductImages, 'order_index', 'ASC']],
             },
@@ -337,7 +335,7 @@ router.get("/girls", async (req, res) => {
                 model: Images,
                 attributes: ['image_id', 'image_path'],
                 through: {
-                    attributes: ['order_index'], // Добавляем поле order_index из ProductImages
+                    attributes: ['order_index'],
                 },
                 order: [[ProductImages, 'order_index', 'ASC']],
             },
@@ -408,10 +406,6 @@ router.get("/babies", async (req, res) => {
             {
                 model: Images,
                 attributes: ['image_id', 'image_path'],
-                // through: {
-                //     attributes: ['order_index'], // Добавляем поле order_index из ProductImages
-                // },
-                // order: [[ProductImages, 'order_index', 'ASC']],
             },
         ]
     });
@@ -425,74 +419,6 @@ router.get("/babies", async (req, res) => {
         success: true,
         data: result
     });
-})
-
-
-router.post("/products/filter", async (req, res) => {
-
-    const data = req.body;
-    console.log('DATA filter val', data);
-
-    // let result;
-    // if (data.searchValue) {
-    //     result = await Products.findAll({
-    //         where: {
-    //             product_name: {
-    //                 [Op.like]: `%${data.searchValue}%`
-    //             },
-    //             deleted_at: null,
-    //         },
-    //         include: [
-    //             {
-    //                 model: Tags,
-    //                 attributes: ['tag_id', 'tag_name']
-    //             },
-    //             {
-    //                 model: Categories,
-    //                 attributes: ['category_id', 'category_name']
-    //             },
-    //             {
-    //                 model: Colors,
-    //                 attributes: ['color_id', 'color_name']
-    //             },
-    //             {
-    //                 model: Units,
-    //                 attributes: ['unit_id', 'unit_name']
-    //             },
-    //             {
-    //                 model: Seasons,
-    //                 attributes: ['season_id', 'season_name']
-    //             },
-    //             {
-    //                 model: Sizes,
-    //                 attributes: ['size_id', 'size_by_height']
-    //             },
-    //             {
-    //                 model: Countries,
-    //                 attributes: ['country_id', 'country_name']
-    //             },
-    //             {
-    //                 model: Brands,
-    //                 attributes: ['brand_id', 'brand_name']
-    //             },
-    //             {
-    //                 model: Images,
-    //                 attributes: ['image_id', 'image_path'],
-    //             },
-    //         ]
-    //     })
-    // }
-    //
-    //
-    // if (result === null) {
-    //     res.json({
-    //         success: false,
-    //     })
-    // }
-    // res.json({
-    //     success: true,
-    //     data: result
-    // });
 })
 
 export default router;

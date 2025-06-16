@@ -1,9 +1,8 @@
 import express from "express";
 import Joi from "joi";
 import {Addresses} from "../../models/addresses.js";
-import {Op, where} from "sequelize";
+import {Op} from "sequelize";
 import {Cities, Regions} from "../../models/associations.js";
-import {sequelize} from "../../models/sequelize.js";
 import {authWebsite} from "../../server/middleware/authWebsite.js";
 
 

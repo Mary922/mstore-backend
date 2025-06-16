@@ -14,7 +14,6 @@ router.get("/colors", checkAuth,async (req, res) => {
             deleted_at: null
         }
     })
-    console.log('RES', result)
 
     if (result === null) {
         res.json({
@@ -35,7 +34,6 @@ router.post("/colors/create", checkAuth,async (req, res) => {
         color_name: data.colorName,
         color_rgb: data.colorRGB,
     })
-    console.log('RES', result)
 
     if (result === null) {
         res.json({
@@ -59,7 +57,6 @@ router.post("/colors/update", checkAuth,async (req, res) => {
             color_id: data.colorId
         }
     })
-    console.log('RES', result)
 
     if (result === null) {
         res.json({
@@ -84,7 +81,6 @@ router.post("/colors/delete",checkAuth, async (req, res) => {
             color_id: data.colorId
         }
     })
-    console.log('RES', result)
 
     if (result === null) {
         res.json({

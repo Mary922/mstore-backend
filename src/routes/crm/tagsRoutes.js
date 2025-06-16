@@ -14,7 +14,6 @@ router.get("/tags", checkAuth,async (req, res) => {
             deleted_at: null
         }
     })
-    console.log('RES', result)
 
     if (result === null) {
         res.json({
@@ -34,7 +33,6 @@ router.post("/tags/create", checkAuth,async (req, res) => {
     const result = await Tags.create({
         tag_name: data.tagName,
     })
-    console.log('RES', result)
 
     if (result === null) {
         res.json({
@@ -57,7 +55,6 @@ router.post("/tags/update", checkAuth,async (req, res) => {
             tag_id: data.tagId
         }
     })
-    console.log('RES', result)
 
     if (result === null) {
         res.json({
@@ -82,7 +79,6 @@ router.post("/tags/delete",checkAuth, async (req, res) => {
             tag_id: data.tagId
         }
     })
-    console.log('RES', result)
 
     if (result === null) {
         res.json({

@@ -14,8 +14,6 @@ router.post('/register', async (req, res) => {
     console.log('DATA', data);
 
     const {email, password,name,surname,phone,birthday} = req.body.client;
-    console.log('EMAIL', email);
-    console.log('PASS', password);
 
     if (!email || !password || !name || !surname || !phone || !birthday) {
         return res.status(200).json({
@@ -115,7 +113,6 @@ router.post("/auth-password/check", async (req, res) => {
 
         const passwordTTL = tempClientPass.created_at;
         const timeDiff = currentTime - passwordTTL;
-        console.log('TIME DIFF TIME DIFF', timeDiff);
 
         if (timeDiff > MAX_TTL_SECONDS) {
             return res.status(200).json(

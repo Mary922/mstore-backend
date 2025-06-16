@@ -3,13 +3,12 @@ import {
     Brands,
     Categories,
     Colors,
-    Countries, Gender, Images, ProductImages,
+    Countries, Images,
     Products,
     Seasons,
     Sizes
 } from "../../models/associations.js";
 import {Op} from "sequelize";
-import {sequelize} from "../../models/sequelize.js";
 
 
 const router = express.Router();
@@ -34,12 +33,6 @@ router.get("/filter/get", async (req, res) => {
             }
         })
 
-
-        // if (result === null) {
-        //     res.json({
-        //         success: false,
-        //     })
-        // }
         res.json({
             success: true,
             data: {
@@ -78,41 +71,23 @@ router.get("/filter/products", async (req, res) => {
         if (data && data.countries) {
             countries = Array.from(data.countries);
         }
-
-        // if (!Array.isArray(sizes) || !Array.isArray(colors) || !Array.isArray(seasons) || !Array.isArray(brands) || !Array.isArray(countries)) {
-        //     return res.status(400).json({success: false, message: 'Invalid input format'});
-        // }
-
         if (seasons && seasons.length > 0) {
-            console.log('SEASONS', seasons);
             filters.season_id = {[Op.in]: seasons};
         } else {
             console.log('NO SEASONS');
         }
 
         if (brands && brands.length > 0) {
-            console.log('BRANDS', brands);
             filters.brand_id = {[Op.in]: brands};
         } else {
             console.log('NO BRANDS');
         }
 
         if (countries && countries.length > 0) {
-            console.log('COUNTRIES', countries);
             filters.country_id = {[Op.in]: countries};
         } else {
             console.log('NO COUNTRIES');
         }
-
-        // if (Array.from(seasons) && Array.from(seasons.length) > 0) {
-        //     filters.season_id = {[Op.in]: seasons};
-        // }
-        // if (Array.from(brands) && Array.from(brands.length) > 0) {
-        //     filters.brand_id = {[Op.in]: brands};
-        // }
-        // if (Array.from(countries) && Array.from(countries.length) > 0) {
-        //     filters.country_id = {[Op.in]: countries};
-        // }
 
         if (minRangeValue && maxRangeValue) {
             filters.price = {[Op.between]: [minRangeValue, maxRangeValue]};
@@ -120,14 +95,6 @@ router.get("/filter/products", async (req, res) => {
         if (gender) {
             filters.gender_id = gender;
         }
-
-        // if (minRangeValue !== undefined && maxRangeValue !== undefined) {
-        //     filters.price = { [Op.between]: [parseFloat(minRangeValue), parseFloat(maxRangeValue)] };
-        // } else if (minRangeValue !== undefined) {
-        //     filters.price = { [Op.gte]: parseFloat(minRangeValue) };
-        // } else if (maxRangeValue !== undefined) {
-        //     filters.price = { [Op.lte]: parseFloat(maxRangeValue) };
-        // }
 
         const include = [];
         if (category) {
@@ -141,34 +108,12 @@ router.get("/filter/products", async (req, res) => {
             })
         }
 
-        // include.push({
-        //         model: Images,
-        //         // attributes: ['image_id', 'image_path'],
-        //         through: {
-        //             attributes: ['order_index'], // Добавляем поле order_index из ProductImages
-        //         },
-        //     order: [[sequelize.col('ProductImages.order_index'), 'ASC']]
-        //     },
-        // )
-
-
         include.push({
                 model: Images,
                 attributes: ['image_id', 'image_path'],
             },
         )
 
-
-        // if (gender) {
-        //     include.push({
-        //         model: Categories,
-        //         attributes: ['gender'],
-        //         where: {
-        //             gender: gender
-        //         },
-        //         required: true,
-        //     })
-        // }
         if (colors && colors.length) {
             include.push({
                 model: Colors,
@@ -178,7 +123,6 @@ router.get("/filter/products", async (req, res) => {
                         [Op.in]: Array.isArray(colors) ? colors : [colors]
                     }
                 },
-                // required: !!colors.length,
             })
         }
         if (sizes && sizes.length) {
@@ -190,36 +134,13 @@ router.get("/filter/products", async (req, res) => {
                         [Op.in]: Array.isArray(sizes) ? sizes : [sizes]
                     }
                 },
-                // required: !!sizes.length
             })
         }
 
-        // console.log('filters',filters);
-        // console.log('include',include);
         let products = await Products.findAll({
             where: filters,
             include: include
         })
-      //  console.log('products RESULT', products);
-
-        // if (products && products.length > 0) {
-        //     for (let product of products) {
-        //         product.images.sort((imgA, imgB) => {
-        //             return imgA.dataValues.ProductImages.order_index - imgB.dataValues.ProductImages.order_index;
-        //         });
-        //     }
-        //     return products
-        // }
-
-
-        // let products;
-        // if (category) {
-        //      products = await Products.findAll({
-        //         where: filters,
-        //         include: include
-        //     })
-        // }
-        // console.log('products RESULT', products)
 
         if (products === null) {
             res.json({

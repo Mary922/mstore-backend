@@ -9,16 +9,8 @@ fs.readFile('/Users/Masha/Downloads/0722a93c35dfba96337b-435b297ac6d90d13a68935e
         return;
     }
     const russia = JSON.parse(data);
-    console.log("File data:", russia);
-
-    // let unique = [...new Set(russia.map(item => item.region))];
-//    console.log('unique', unique);
-
-    // await Regions.truncate();
-    // await Cities.truncate();
 
     for (let i = 0; i < russia.length; i++) {
-        // let region = null;
         let region = await Regions.findOne({
             where: {
                 region_name: russia[i].region
@@ -34,6 +26,4 @@ fs.readFile('/Users/Masha/Downloads/0722a93c35dfba96337b-435b297ac6d90d13a68935e
             city_name: russia[i].city,
         })
     }
-
-
 })

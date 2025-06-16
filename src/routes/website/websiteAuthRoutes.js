@@ -9,11 +9,10 @@ import {CartItems} from "../../models/cartItems.js";
 import {authWebsite} from "../../server/middleware/authWebsite.js";
 
 
-
 const router = express.Router();
 
 
-router.post("/auth",authWebsite,async (req, res) => {
+router.post("/auth", authWebsite, async (req, res) => {
     try {
         const data = req.body;
         console.log('DATA', data);
@@ -26,26 +25,15 @@ router.post("/auth",authWebsite,async (req, res) => {
 
         if (!client) {
             return res.json({message: 'No client found.'});
-            // return res.status(200).json({
-            //     data:
-            //         {
-            //             message: "No client found with this email"
-            //         }
-            // });
-            // return res.send({message: 'No client found.'})
         }
 
         if (client.client_password && password) {
-            console.log('lets check')
             const isPasswordValid = await bcrypt.compare(password, client.client_password);
             if (!isPasswordValid) {
                 return res.status(401).json({message: 'Invalid credentials,yes'});
             }
 
             let token = jwt.sign({id: client.client_id}, 'secret', {algorithm: 'HS256', expiresIn: '24h'});
-
-            console.log('password is ok');
-
 
             const tempProducts = await TempCartItems.findAll(
                 {
@@ -54,8 +42,6 @@ router.post("/auth",authWebsite,async (req, res) => {
                             client_id: req.userId
                         }
                 });
-
-            console.log('tempProducts', tempProducts);
 
             for (const tempItem of tempProducts) {
                 const existingProduct = await CartItems.findOne({
@@ -67,8 +53,6 @@ router.post("/auth",authWebsite,async (req, res) => {
                 });
 
                 if (existingProduct) {
-                    console.log('uze est')
-                    // Если товар уже существует в главной корзине — увеличиваем количество
                     await CartItems.update(
                         {product_count: existingProduct.product_count + tempItem.product_count},
                         {
@@ -79,10 +63,6 @@ router.post("/auth",authWebsite,async (req, res) => {
                         }
                     );
                 } else {
-                    console.log('im here no',existingProduct);
-                    console.log('reqqq',req.userId);
-
-                    // Добавляем новый продукт в главную корзину
                     await CartItems.create({
                         client_id: client.client_id,
                         product_id: tempItem.product_id,
@@ -93,10 +73,7 @@ router.post("/auth",authWebsite,async (req, res) => {
                 }
             }
 
-            // Удаляем временную корзину после объединения
             await TempCartItems.destroy({where: {client_id: req.userId}});
-
-
 
             return res.json({
                 success: true,
@@ -107,26 +84,8 @@ router.post("/auth",authWebsite,async (req, res) => {
 
                 }
             })
-
-
         }
-
-        // if (client.client_password === hashedPassword) {
-        //
-        // } else {
-        //     res.json({message: 'Wrong password.'});
-        //     // return res.status(200).json({
-        //     //     data:
-        //     //         {
-        //     //             message: 'Password is invalid.'
-        //     //         }
-        //     // });
-        //     return res.send({message: 'Password is invalid.'})
-        // }
-
-
     } catch (error) {
-        console.log('its error')
         return res.status(500).json({error: "Internal server error"});
     }
 })
@@ -150,7 +109,6 @@ router.post("/auth-temp", async (req, res) => {
     } catch (error) {
         if (error.name === 'TokenExpiredError') {
             return res.status(401).json({success: false, error: "Токен истек"});
-            console.log('token vse')
         }
         console.log(error);
     }

@@ -14,9 +14,6 @@ router.get("/prices/max", async (req, res) => {
         ]
     });
 
-    console.log('MAX MAX MAX', result)
-
-
     if (result === null) {
         res.json({
             success: false,

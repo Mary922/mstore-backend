@@ -9,7 +9,6 @@ router.get("/seasons/get", checkAuth,async (req, res) => {
     console.log('DATA',data);
 
     const  result = await Seasons.findAll({})
-    console.log('RES',result)
 
     if(result === null){
         res.json({
