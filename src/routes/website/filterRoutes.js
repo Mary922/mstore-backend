@@ -88,7 +88,9 @@ router.get("/filter/products", async (req, res) => {
         } else {
             console.log('NO COUNTRIES');
         }
-
+        if (!minRangeValue && maxRangeValue) {
+            filters.price = {[Op.between]: [0, maxRangeValue]};
+        }
         if (minRangeValue && maxRangeValue) {
             filters.price = {[Op.between]: [minRangeValue, maxRangeValue]};
         }
