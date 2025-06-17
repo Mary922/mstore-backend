@@ -71,7 +71,7 @@ router.post("/upload_files/static",async (req, res) => {
         image.image_path = image.image_id + '.' + extension;
         await image.save();
 
-        const newImageFiles = files[i].mv('static/' + image.image_path);
+        const newImageFiles = files[i].mv('images/static/' + image.image_path);
 
         imageIds.push(image.image_id);
     }
